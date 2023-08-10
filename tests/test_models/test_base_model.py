@@ -27,7 +27,7 @@ class TestBaseModel(unittest.TestCase):
         """
         test __str__ method
         """
-        expected_output = "[BaseModel] ({}){}".format(
+        expected_output = "[BaseModel] ({}) {}".format(
             self.my_model.id, self.my_model.__dict__)
         self.assertEqual(str(self.my_model), expected_output)
 
