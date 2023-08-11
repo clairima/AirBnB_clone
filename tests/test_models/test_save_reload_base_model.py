@@ -29,9 +29,9 @@ class TestFileStorage(unittest.TestCase):
         saves the instance using storage.save(), and checks if the instance
         is present in the __objects dictionary.
         """
-        new_inst_key = f"{self.my_model.__class__.__name__}.{self.my_model.id}"
+        new_instance_key = f"{self.my_model.__class__.__name__}.{self.my_model.id}"
         storage.save()
-        self.assertIn(new_inst_key, storage.all())
+        self.assertIn(new_instance_key, storage.all())
 
     def test_save_and_reload(self):
         """
@@ -41,11 +41,11 @@ class TestFileStorage(unittest.TestCase):
         after reloading. Additionally, it confirms that the reloaded object
         is an instance of BaseModel.
         """
-        new_inst_key = f"{self.my_model.__class__.__name__}.{self.my_model.id}"
+        new_instance_key = f"{self.my_model.__class__.__name__}.{self.my_model.id}"
         storage.save()
         storage.reload()
-        self.assertIn(new_inst_key, storage.all())
-        self.assertIsInstance(storage.all()[new_inst_key], BaseModel)
+        self.assertIn(new_instance_key, storage.all())
+        self.assertIsInstance(storage.all()[new_instance_key], BaseModel)
 
 
 if __name__ == '__main__':
