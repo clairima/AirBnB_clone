@@ -9,6 +9,7 @@ interactive interface
 import cmd
 from models import storage
 from models.base_model import BaseModel
+from models.user import User
 import shlex
 
 
@@ -25,6 +26,7 @@ class HBNBCommand(cmd.Cmd):
         """
         Exiting the program when reaching End of file
         """
+        print("")
         return True
 
     def do_quit(self, line):
@@ -125,8 +127,12 @@ class HBNBCommand(cmd.Cmd):
          instances based or not on the class name.
         """
         flag = 1
+        obj_list = []
+        all_obj = storage.all()
         if not class_name:
-            print("** class doesn't exist **")
+            for value in all_obj.values():
+                obj_list.append(str(value))
+            print(obj_list)
             flag = 0
         else:
             try:
@@ -135,10 +141,9 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
                 flag = 0
         if flag:
-            obj_list = []
-            all_obj = storage.all()
-            for value in all_obj.values():
-                obj_list.append(str(value))
+            for key, value in all_obj.items():
+                if key.split('.')[0] == class_name:
+                    obj_list.append(str(value))
             print(obj_list)
 
     def do_update(self, line):

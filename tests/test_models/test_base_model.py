@@ -23,6 +23,10 @@ class TestBaseModel(unittest.TestCase):
         self.my_model.name = "My First Model"
         self.my_model.my_number = 89
 
+    def test_object_type(self):
+        """ testing object type"""
+        self.assertEqual(BaseModel, type(BaseModel()))
+
     def test_str(self):
         """
         test __str__ method

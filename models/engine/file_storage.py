@@ -65,5 +65,9 @@ class FileStorage:
             json_objs = f.read()
             obj_dic = json.loads(json_objs)
             from models.base_model import BaseModel
+            from models.user import User
             for key, value in obj_dic.items():
-                self.__objects[key] = BaseModel(**value)
+                class_name = value['__class__']
+                if class_name in locals():
+                    model_class = locals()[class_name]
+                    self.__objects[key] = model_class(**value)
