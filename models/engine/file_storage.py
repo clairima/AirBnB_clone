@@ -64,7 +64,12 @@ class FileStorage:
         with open(self.__file_path, 'r') as f:
             json_objs = f.read()
             obj_dic = json.loads(json_objs)
+            from models.amenity import Amenity
             from models.base_model import BaseModel
+            from models.city import City
+            from models.place import Place
+            from models.review import Review
+            from models.state import State
             from models.user import User
             for key, value in obj_dic.items():
                 class_name = value['__class__']
