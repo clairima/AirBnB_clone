@@ -45,7 +45,7 @@ class TestFileStorage(unittest.TestCase):
         storage.save()
         storage.reload()
         self.assertIn(new_instance_key, storage.all())
-        self.assertIsInstance(storage.all()[new_inst_key], BaseModel)
+        self.assertIsInstance(storage.all()[new_instance_key], BaseModel)
 
 
 if __name__ == '__main__':
