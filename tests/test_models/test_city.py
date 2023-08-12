@@ -35,6 +35,7 @@ class TestCityAttributes(unittest.TestCase):
         city = City()
         self.assertEqual(type(city.name), str)
 
+
 class TestCityMethods(unittest.TestCase):
     """
     Test methods of the City class
