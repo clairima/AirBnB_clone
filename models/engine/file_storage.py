@@ -17,21 +17,14 @@ class FileStorage:
     file to instances
     """
 
-    def __init__(self, file_path=None):
-        """
-        Constructor for the FileStorage class objects
-        """
-        if file_path is not None:
-            self.__file_path = file_path
-        else:
-            self.__file_path = './file.json'
-        self.__objects = {}
+    __file_path = 'file.json'
+    __objects = {}
 
     def all(self):
         """
         returns __objects dictionary
         """
-        return self.__objects
+        return FileStorage.__objects
 
     def new(self, obj):
         """
@@ -39,17 +32,17 @@ class FileStorage:
         <obj class name>.id
         """
         key = f"{type(obj).__name__}.{obj.id}"
-        self.__objects[key] = obj
+        FileStorage.__objects[key] = obj
 
     def save(self):
         """
         serializes __objects to the JSON file
         """
         obj_dic = {}
-        for key, value in self.__objects.items():
+        for key, value in FileStorage.__objects.items():
             obj_dic[key] = value.to_dict()
         json_objs = json.dumps(obj_dic, default=str)
-        with open(self.__file_path, 'w') as f:
+        with open(FileStorage.__file_path, 'w') as f:
             return f.write(json_objs)
 
     def reload(self):
@@ -59,9 +52,9 @@ class FileStorage:
         otherwise, do nothing. If the file doesn’t
         exist.
         """
-        if not exists(self.__file_path):
+        if not exists(FileStorage.__file_path):
             return
-        with open(self.__file_path, 'r') as f:
+        with open(FileStorage.__file_path, 'r') as f:
             json_objs = f.read()
             obj_dic = json.loads(json_objs)
             from models.amenity import Amenity
@@ -75,4 +68,4 @@ class FileStorage:
                 class_name = value['__class__']
                 if class_name in locals():
                     model_class = locals()[class_name]
-                    self.__objects[key] = model_class(**value)
+                    FileStorage.__objects[key] = model_class(**value)
