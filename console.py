@@ -160,13 +160,13 @@ class HBNBCommand(cmd.Cmd):
         flag = 1
         obj_list = []
         all_obj = storage.all()
-        class_name = shlex.split(line)[0]
-        if not class_name:
+        if not line:
             for value in all_obj.values():
                 obj_list.append(str(value))
             print(obj_list)
             flag = 0
         else:
+            class_name = shlex.split(line)[0]
             try:
                 cls = globals()[class_name]
             except Exception as e:
@@ -200,11 +200,12 @@ class HBNBCommand(cmd.Cmd):
         print the number of instances for the given class
         """
         count = 0
-        class_name = shlex.split(line)[0]
-        all_obj = storage.all()
-        for key in all_obj.keys():
-            if key.split('.')[0] == class_name:
-                count += 1
+        if line:
+            class_name = shlex.split(line)[0]
+            all_obj = storage.all()
+            for key in all_obj.keys():
+                if key.split('.')[0] == class_name:
+                    count += 1
         print(count)
 
 
