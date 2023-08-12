@@ -7,10 +7,16 @@ interactive interface
 """
 
 import cmd
-from models import storage
+from models.amenity import Amenity
 from models.base_model import BaseModel
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models import storage
 from models.user import User
 import shlex
+import re
 
 
 class HBNBCommand(cmd.Cmd):
@@ -21,6 +27,31 @@ class HBNBCommand(cmd.Cmd):
     """
 
     prompt = '(hbnb) '
+
+    def default(self, line):
+        """
+        Custom implementation for
+        <Class_name>.method_name(<args>)
+        """
+        methods = [self.do_show, self.do_all, self.do_destroy,
+                   self.do_update, self.do_count]
+        starts = ['show(', 'all(', 'destroy(', 'update(', 'count(']
+        cmd_parts = line.split('.')
+        if len(cmd_parts) == 2:
+            class_name, method_args = cmd_parts
+            for i in range(len(starts)):
+                if method_args.startswith(starts[i])\
+                        and method_args.endswith(')'):
+                    rest_of_args = method_args[len(starts[i]):-1]
+                    rest_of_args = re.sub(",", " ", rest_of_args)
+                    line = class_name + " " + rest_of_args
+                    methods[i](line)
+                    return
+        super().default(line)
+
+    def emptyline(self):
+        """Do nothing when receiving an empty line"""
+        pass
 
     def do_EOF(self, line):
         """
@@ -121,7 +152,7 @@ class HBNBCommand(cmd.Cmd):
             del all_objs[key]
             storage.save()
 
-    def do_all(self, class_name):
+    def do_all(self, line):
         """
          Prints all string representation of all
          instances based or not on the class name.
@@ -129,6 +160,7 @@ class HBNBCommand(cmd.Cmd):
         flag = 1
         obj_list = []
         all_obj = storage.all()
+        class_name = shlex.split(line)[0]
         if not class_name:
             for value in all_obj.values():
                 obj_list.append(str(value))
@@ -162,6 +194,18 @@ class HBNBCommand(cmd.Cmd):
             key = key = f'{args[0]}.{args[1]}'
             setattr(all_obj[key], args[2], attr_value)
             all_obj[key].save()
+
+    def do_count(self, line):
+        """
+        print the number of instances for the given class
+        """
+        count = 0
+        class_name = shlex.split(line)[0]
+        all_obj = storage.all()
+        for key in all_obj.keys():
+            if key.split('.')[0] == class_name:
+                count += 1
+        print(count)
 
 
 if __name__ == '__main__':
