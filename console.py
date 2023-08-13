@@ -7,9 +7,16 @@ interactive interface
 """
 
 import cmd
-from models import storage
+from models.amenity import Amenity
 from models.base_model import BaseModel
+from models.city import City
+from models.place import Place
+from models.review import Review
+from models.state import State
+from models import storage
+from models.user import User
 import shlex
+import re
 
 
 class HBNBCommand(cmd.Cmd):
@@ -21,10 +28,36 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = '(hbnb) '
 
+    def default(self, line):
+        """
+        Custom implementation for
+        <Class_name>.method_name(<args>)
+        """
+        methods = [self.do_show, self.do_all, self.do_destroy,
+                   self.do_update, self.do_count]
+        starts = ['show(', 'all(', 'destroy(', 'update(', 'count(']
+        cmd_parts = line.split('.')
+        if len(cmd_parts) == 2:
+            class_name, method_args = cmd_parts
+            for i in range(len(starts)):
+                if method_args.startswith(starts[i])\
+                        and method_args.endswith(')'):
+                    rest_of_args = method_args[len(starts[i]):-1]
+                    rest_of_args = re.sub(",", " ", rest_of_args)
+                    line = class_name + " " + rest_of_args
+                    methods[i](line)
+                    return
+        super().default(line)
+
+    def emptyline(self):
+        """Do nothing when receiving an empty line"""
+        pass
+
     def do_EOF(self, line):
         """
         Exiting the program when reaching End of file
         """
+        print("")
         return True
 
     def do_quit(self, line):
@@ -119,44 +152,72 @@ class HBNBCommand(cmd.Cmd):
             del all_objs[key]
             storage.save()
 
-    def do_all(self, class_name):
+    def do_all(self, line):
         """
          Prints all string representation of all
          instances based or not on the class name.
         """
         flag = 1
-        if not class_name:
-            print("** class doesn't exist **")
+        obj_list = []
+        all_obj = storage.all()
+        if not line:
+            for value in all_obj.values():
+                obj_list.append(str(value))
+            print(obj_list)
             flag = 0
         else:
+            class_name = shlex.split(line)[0]
             try:
                 cls = globals()[class_name]
             except Exception as e:
                 print("** class doesn't exist **")
                 flag = 0
         if flag:
-            obj_list = []
-            all_obj = storage.all()
-            for value in all_obj.values():
-                obj_list.append(str(value))
+            for key, value in all_obj.items():
+                if key.split('.')[0] == class_name:
+                    obj_list.append(str(value))
             print(obj_list)
 
     def do_update(self, line):
         """
-         Updates an instance based on the class
-         name and id by adding or updating attribute
-         (save the change into the JSON file).
-         Usage:
-         update <cls name> <id> <atr name> "<atr value>"
+        Updates an instance based on the class
+        name and id using a dictionary representation
+        (save the change into the JSON file).
+        Usage:
+        update <cls name> <id> <dictionary representation>
         """
         args = shlex.split(line)
-        flag = self.handle_args(args, 4)
+        flag = self.handle_args(args, 3)
         if flag:
-            attr_value = args[3].strip('"')
+            all_objs = storage.all()
+            key = f'{args[0]}.{args[1]}'
+            if key in all_objs:
+                instance = all_objs[key]
+                try:
+                    attr_dict = eval(args[2])
+                    if type(attr_dict) == dict:
+                        for attr, value in attr_dict.items():
+                            setattr(instance, attr, value)
+                        instance.save()
+                    else:
+                        print("** dict representation must be a valid dictionary **")
+                except Exception as e:
+                    print("** invalid dictionary representation **")
+            else:
+                print("** no instance found **")
+
+    def do_count(self, line):
+        """
+        print the number of instances for the given class
+        """
+        count = 0
+        if line:
+            class_name = shlex.split(line)[0]
             all_obj = storage.all()
-            key = key = f'{args[0]}.{args[1]}'
-            setattr(all_obj[key], args[2], attr_value)
-            all_obj[key].save()
+            for key in all_obj.keys():
+                if key.split('.')[0] == class_name:
+                    count += 1
+        print(count)
 
 
 if __name__ == '__main__':
