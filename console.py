@@ -180,20 +180,31 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, line):
         """
-         Updates an instance based on the class
-         name and id by adding or updating attribute
-         (save the change into the JSON file).
-         Usage:
-         update <cls name> <id> <atr name> "<atr value>"
+        Updates an instance based on the class
+        name and id using a dictionary representation
+        (save the change into the JSON file).
+        Usage:
+        update <cls name> <id> <dictionary representation>
         """
         args = shlex.split(line)
-        flag = self.handle_args(args, 4)
+        flag = self.handle_args(args, 3)
         if flag:
-            attr_value = args[3].strip('"')
-            all_obj = storage.all()
-            key = key = f'{args[0]}.{args[1]}'
-            setattr(all_obj[key], args[2], attr_value)
-            all_obj[key].save()
+            all_objs = storage.all()
+            key = f'{args[0]}.{args[1]}'
+            if key in all_objs:
+                instance = all_objs[key]
+                try:
+                    attr_dict = eval(args[2])
+                    if type(attr_dict) == dict:
+                        for attr, value in attr_dict.items():
+                            setattr(instance, attr, value)
+                        instance.save()
+                    else:
+                        print("** dict representation must be a valid dictionary **")
+                except Exception as e:
+                    print("** invalid dictionary representation **")
+            else:
+                print("** no instance found **")
 
     def do_count(self, line):
         """
