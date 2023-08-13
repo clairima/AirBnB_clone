@@ -181,10 +181,14 @@ class HBNBCommand(cmd.Cmd):
     def do_update(self, line):
         """
         Updates an instance based on the class
-        name and id using a dictionary representation
+        name and id by adding or updating attribute
         (save the change into the JSON file).
-        Usage:
-        update <cls name> <id> <dictionary representation>
+
+        Usage for individual attributes:
+        update <cls name> <id> <atr name> "<atr value>"
+
+        Usage for dictionary representation:
+        update <cls name> <id> {"attr1": "value1", "attr2": "value2", ...}
         """
         args = shlex.split(line)
         flag = self.handle_args(args, 3)
@@ -194,17 +198,28 @@ class HBNBCommand(cmd.Cmd):
             if key in all_objs:
                 instance = all_objs[key]
                 try:
-                    attr_dict = eval(args[2])
-                    if type(attr_dict) == dict:
-                        for attr, value in attr_dict.items():
-                            setattr(instance, attr, value)
-                        instance.save()
+                    attr_value = args[2]
+                    if attr_value.startswith("{") and attr_value.endswith("}"):
+                        attr_dict = eval(attr_value)
+                        if type(attr_dict) == dict:
+                            for attr, value in attr_dict.items():
+                                setattr(instance, attr, value)
+                            instance.save()
+                        else:
+                            print("** dictionary representation must be a valid dictionary **")
                     else:
-                        print("** dict representation must be a valid dictionary **")
+                        attr_name = attr_value
+                        if len(args) < 4:
+                            print("** value missing **")
+                            return
+                        attr_value = args[3].strip('"')
+                        setattr(instance, attr_name, attr_value)
+                        instance.save()
                 except Exception as e:
-                    print("** invalid dictionary representation **")
+                    print("** invalid input **")
             else:
                 print("** no instance found **")
+
 
     def do_count(self, line):
         """
