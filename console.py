@@ -206,7 +206,7 @@ class HBNBCommand(cmd.Cmd):
                                 setattr(instance, attr, value)
                             instance.save()
                         else:
-                            print("** dictionary representation must be a valid dictionary **")
+                            print("dict represent must be a valid dictionary")
                     else:
                         attr_name = attr_value
                         if len(args) < 4:
@@ -219,7 +219,6 @@ class HBNBCommand(cmd.Cmd):
                     print("** invalid input **")
             else:
                 print("** no instance found **")
-
 
     def do_count(self, line):
         """
