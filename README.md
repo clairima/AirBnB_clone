@@ -26,9 +26,9 @@ The project uses a file storage engine to serialize instances to JSON files and 
 - `__file_path`: A string representing the path to the JSON file (e.g., `file.json`).
 - `__objects`: A dictionary that stores all objects by `<class name>.id` (e.g., to store a `BaseModel` object with `id=12121212`, the key will be `BaseModel.12121212`).
 
-## Console Interface using hbnb package
+## Console Interface using cmd package
 
-The AirBnB Clone project provides a console interface for interacting with the application. The interface is implemented using the `hbnb` package in Python. Here are the available commands:
+The AirBnB Clone project provides a console interface for interacting with the application. The interface is implemented using the `cmd` package in Python. Here are the available commands:
 
 1. `quit`:
    - Description: Exits the program.
