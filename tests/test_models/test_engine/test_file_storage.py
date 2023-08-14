@@ -97,6 +97,7 @@ class TestFileStorage(unittest.TestCase):
         (from "file.json")
         """
         storage.save()
+        FileStorage._FileStorage__objects = {}
         storage.reload()
         all_objs = storage.all()
         self.assertIn("BaseModel." + self.obj_base.id, all_objs)
