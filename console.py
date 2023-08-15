@@ -180,45 +180,31 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, line):
         """
-        Updates an instance based on the class
-        name and id by adding or updating attribute
-        (save the change into the JSON file).
-
-        Usage for individual attributes:
-        update <cls name> <id> <atr name> "<atr value>"
-
-        Usage for dictionary representation:
-        update <cls name> <id> {"attr1": "value1", "attr2": "value2", ...}
+         Updates an instance based on the class
+         name and id by adding or updating attribute
+         (save the change into the JSON file).
+         Usage:
+         update <cls name> <id> <atr name> "<atr value>"
+         OR
+         update <cls name> <id> <dictionary representation>
         """
         args = shlex.split(line)
-        flag = self.handle_args(args, 3)
+        flag = self.handle_args(args, 4)
         if flag:
-            all_objs = storage.all()
+            all_obj = storage.all()
             key = f'{args[0]}.{args[1]}'
-            if key in all_objs:
-                instance = all_objs[key]
-                try:
-                    attr_value = args[2]
-                    if attr_value.startswith("{") and attr_value.endswith("}"):
-                        attr_dict = eval(attr_value)
-                        if type(attr_dict) == dict:
-                            for attr, value in attr_dict.items():
-                                setattr(instance, attr, value)
-                            instance.save()
-                        else:
-                            print("dict represent must be a valid dictionary")
-                    else:
-                        attr_name = attr_value
-                        if len(args) < 4:
-                            print("** value missing **")
-                            return
-                        attr_value = args[3].strip('"')
-                        setattr(instance, attr_name, attr_value)
-                        instance.save()
-                except Exception as e:
-                    print("** invalid input **")
+            last_arg = args[3]
+            if last_arg.startswith('{') and last_arg.endswith('}'):
+                attr_dict = eval(last_arg)
+                if isinstance(attr_dict, dict):
+                    for attr_name, attr_value in attr_dict.items():
+                        setattr(all_obj[key], attr_name, attr_value)
+                    all_obj[key].save()
             else:
-                print("** no instance found **")
+                attr_name = args[2]
+                attr_value = last_arg.strip('"')
+                setattr(all_obj[key], attr_name, attr_value)
+                all_obj[key].save()
 
     def do_count(self, line):
         """
