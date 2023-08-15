@@ -31,19 +31,12 @@ class TestFileStorage(unittest.TestCase):
         new instances of different classes and assigning attributes to it.
         """
         self.obj_base = BaseModel()
-        storage.new(self.obj_base)
         self.obj_usr = User()
-        storage.new(self.obj_usr)
         self.obj_city = City()
-        storage.new(self.obj_city)
         self.obj_place = Place()
-        storage.new(self.obj_place)
         self.obj_state = State()
-        storage.new(self.obj_state)
         self.obj_review = Review()
-        storage.new(self.obj_review)
         self.obj_amenity = Amenity()
-        storage.new(self.obj_amenity)
 
     def test_type_file_path(self):
         """ Tests the type of the file path """
@@ -103,9 +96,8 @@ class TestFileStorage(unittest.TestCase):
         Test reloading instance from the storage
         (from "file.json")
         """
-        self.obj_base = BaseModel()
-        storage.new(self.obj_base)
         storage.save()
+        storage.reload()
         all_objs = storage.all()
         self.assertIn("BaseModel." + self.obj_base.id, all_objs)
         self.assertIn("User." + self.obj_usr.id, all_objs)
