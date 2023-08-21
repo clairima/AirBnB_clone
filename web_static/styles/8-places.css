@@ -49,14 +49,20 @@
 
 .max_guest .icon {
   background-image: url('../images/icon1.png');
+  width: 35px;
+  height: 35px;
 }
 
 .number_rooms .icon {
   background-image: url('../images/icon2.png');
+  width: 35px;
+  height: 35px;
 }
 
 .number_bathrooms .icon {
   background-image: url('../images/icon3.png');
+  width: 35px;
+  height: 35px;
 }
 
 .user {

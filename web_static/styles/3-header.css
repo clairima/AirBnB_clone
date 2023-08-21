@@ -1,5 +1,5 @@
 header {
-  background-color: #FF0000;
+  background-color: white;
   height: 70px;
   width: 100%;
   border-bottom: 1px solid #CCCCCC;
@@ -9,7 +9,7 @@ header {
 
 .logo {
   margin-left: 20px;
-  width: 30px;
+  width: 70px;
   height: 30px;
   background-image: url('../images/logo.png');
   background-size: cover;
